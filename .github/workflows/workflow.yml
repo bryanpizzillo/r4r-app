@@ -83,7 +83,15 @@ jobs:
       #   with:
       #     name: test-results
       #     path: coverage
-      ## Upload the test results artifact
+      ## Publish the new release. Looking at this action, this will
+      ## get the next version from repository, and then locally modify
+      ## package.json and make the package. So the version number
+      ## should no longer matter in the repo's package.json.
+      - name: Publish
+        uses: mikeal/merge-release@v4.0.26
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Archive production artifacts
         uses: actions/upload-artifact@v1
         with:
@@ -207,3 +215,4 @@ jobs:
           ## Sucessfully Completed.
           print("Uploaded {0} successfully".format(artifact_filename))
           exit(0)
+    
